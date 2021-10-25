@@ -85,8 +85,7 @@ a {
 
 /* Popup style */
 .popup .content {
-    text-align: right;
-    column-count: initial;
+    
 }
 
 figure {
@@ -132,7 +131,6 @@ figcaption {
     font-size: 50px;
     width: 40px;
     height: 40px;
-    border-radius: 50%;
 }
 .popup .content {
     width: 100%;
@@ -140,8 +138,8 @@ figcaption {
     box-sizing: border-box;
     max-width: 600px;
     background-color: #fff;
-    border-radius: 6px;
-    padding: 20px;
+    text-align: right;
+    column-count: initial;
 }
 
 .popup .link {

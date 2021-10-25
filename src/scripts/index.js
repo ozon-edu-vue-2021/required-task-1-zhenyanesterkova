@@ -177,9 +177,12 @@ const actionHandler = function (evt) {
 const imageHandler = function (evt) {
     evt.preventDefault();
     const linkTarget = evt.target.closest('a');
-    if (linkTarget) {
-        getPictureInfo(linkTarget.dataset.id);
-    }
+    
+    if (!linkTarget) return;
+    
+    if (!container.contains(linkTarget) || !linkTarget.dataset.id) return;
+    
+    getPictureInfo(linkTarget.dataset.id);
 }
 
 action.addEventListener('click', actionHandler);
