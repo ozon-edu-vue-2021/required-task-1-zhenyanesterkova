@@ -62,7 +62,7 @@ const showLoader = function () {
 const hideLoader = function () {
     loaderTimeout = setTimeout(function () {
         loader.style.visibility = 'hidden';
-        loaderTimeout.clearTimeout();
+        clearTimeout(loaderTimeout);
     }, 700);
 }
 
@@ -79,6 +79,7 @@ const cropImage = function (src, size = 2) {
     const newHeight = Math.floor(+height / size);
 
     return `https://${domain}/${key}/${id}/${newWidth}/${newHeight}`;
+    
 }
 
 /**
@@ -91,10 +92,12 @@ const renderPictures = function (list) {
         throw Error(`Pictures not defined. The list length: ${list.length}`);
     }
 
-    const clone = templateImageCard.content.cloneNode(true);
-    const fragment = document.createDocumentFragment();
+    //script в коде располгался раньше, чем шаблон #image. Скрипт запускался раньше, чем шаблон появлялся в DOM 
+    
 
     list.forEach(function (element) {
+        const clone = templateImageCard.content.cloneNode(true); 
+        const fragment = document.createDocumentFragment();
         const link = clone.querySelector('a');
 
         link.href = element.url;
@@ -102,12 +105,15 @@ const renderPictures = function (list) {
 
         const image = clone.querySelector('img');
         image.src = cropImage(element.download_url, 5);
+        
+        
         image.alt = element.author;
         image.classList.add('preview');
-        fragment.appendChild(clone)
+        fragment.appendChild(clone);
+        container.appendChild(fragment);
     });
 
-    container.appendChild(fragment);
+    
     hideLoader();
 }
 
@@ -152,7 +158,7 @@ const togglePopup = function () {
 const actionHandler = function (evt) {
     evt.preventDefault();
     const nextPage = evt.currentTarget.dataset.page;
-    evt.currentTarget.dataset.page = nextPage + 1;
+    evt.currentTarget.dataset.page = +nextPage + 1;
 
     if (nextPage > MAX_PAGE_IAMGES) {
         console.warn(`WARN: You are trying to call a page that exceeds ${MAX_PAGE_IAMGES}`);
@@ -170,10 +176,13 @@ const actionHandler = function (evt) {
  */
 const imageHandler = function (evt) {
     evt.preventDefault();
-
-    if (evt.target.closest('a')) {
-        getPictureInfo(evt.target.dataset.id);
-    }
+    const linkTarget = evt.target.closest('a');
+    
+    if (!linkTarget) return;
+    
+    if (!container.contains(linkTarget) || !linkTarget.dataset.id) return;
+    
+    getPictureInfo(linkTarget.dataset.id);
 }
 
 action.addEventListener('click', actionHandler);
